@@ -80,10 +80,10 @@ func (s *crossSigningSigsStatements) SelectCrossSigningSigsForTarget(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectCrossSigningSigsForTargetStmt: rows.close() failed")
 	r = types.CrossSigningSigMap{}
+	var userID string
+	var keyID gomatrixserverlib.KeyID
+	var signature gomatrixserverlib.Base64Bytes
 	for rows.Next() {
-		var userID string
-		var keyID gomatrixserverlib.KeyID
-		var signature gomatrixserverlib.Base64Bytes
 		if err := rows.Scan(&userID, &keyID, &signature); err != nil {
 			return nil, err
 		}

@@ -73,9 +73,9 @@ func (s *crossSigningKeysStatements) SelectCrossSigningKeysForUser(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectCrossSigningKeysForUserStmt: rows.close() failed")
 	r = types.CrossSigningKeyMap{}
+	var keyTypeInt int16
+	var keyData gomatrixserverlib.Base64Bytes
 	for rows.Next() {
-		var keyTypeInt int16
-		var keyData gomatrixserverlib.Base64Bytes
 		if err := rows.Scan(&keyTypeInt, &keyData); err != nil {
 			return nil, err
 		}
