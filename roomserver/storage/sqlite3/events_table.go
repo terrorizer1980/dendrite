@@ -400,15 +400,15 @@ func (s *eventStatements) BulkSelectStateAtEventAndReference(
 	defer internal.CloseAndLogIfError(ctx, rows, "bulkSelectStateAtEventAndReference: rows.close() failed")
 	results := make([]types.StateAtEventAndReference, len(eventNIDs))
 	i := 0
+	var (
+		eventTypeNID     int64
+		eventStateKeyNID int64
+		eventNID         int64
+		stateSnapshotNID int64
+		eventID          string
+		eventSHA256      []byte
+	)
 	for ; rows.Next(); i++ {
-		var (
-			eventTypeNID     int64
-			eventStateKeyNID int64
-			eventNID         int64
-			stateSnapshotNID int64
-			eventID          string
-			eventSHA256      []byte
-		)
 		if err = rows.Scan(
 			&eventTypeNID, &eventStateKeyNID, &eventNID, &stateSnapshotNID, &eventID, &eventSHA256,
 		); err != nil {

@@ -80,11 +80,11 @@ func UpStateBlocksRefactor(tx *sql.Tx) error {
 		return fmt.Errorf("tx.Query: %w", err)
 	}
 	defer internal.CloseAndLogIfError(context.TODO(), snapshotrows, "rows.close() failed")
+	var snapshot types.StateSnapshotNID
+	var room types.RoomNID
+	var jsonblocks string
+	var blocks []types.StateBlockNID
 	for snapshotrows.Next() {
-		var snapshot types.StateSnapshotNID
-		var room types.RoomNID
-		var jsonblocks string
-		var blocks []types.StateBlockNID
 		if err = snapshotrows.Scan(&snapshot, &room, &jsonblocks); err != nil {
 			return fmt.Errorf("rows.Scan: %w", err)
 		}
@@ -115,8 +115,8 @@ func UpStateBlocksRefactor(tx *sql.Tx) error {
 				}
 				defer internal.CloseAndLogIfError(context.TODO(), blockrows, "rows.close() failed")
 				events := types.EventNIDs{}
+				var event types.EventNID
 				for blockrows.Next() {
-					var event types.EventNID
 					if err = blockrows.Scan(&event); err != nil {
 						return fmt.Errorf("rows.Scan: %w", err)
 					}

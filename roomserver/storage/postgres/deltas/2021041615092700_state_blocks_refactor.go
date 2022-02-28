@@ -153,10 +153,10 @@ func UpStateBlocksRefactor(tx *sql.Tx) error {
 		var snapshots []stateBlockData
 
 		var badCreateSnapshots []stateBlockData
+		var snapshot stateBlockData
+		var eventsarray []sql.NullInt64
+		var nulStateBlockNID sql.NullInt64
 		for snapshotrows.Next() {
-			var snapshot stateBlockData
-			var eventsarray []sql.NullInt64
-			var nulStateBlockNID sql.NullInt64
 			if err = snapshotrows.Scan(&snapshot.StateSnapshotNID, &snapshot.RoomNID, &nulStateBlockNID, pq.Array(&eventsarray)); err != nil {
 				return fmt.Errorf("rows.Scan: %w", err)
 			}
