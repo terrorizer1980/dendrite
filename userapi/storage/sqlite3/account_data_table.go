@@ -93,12 +93,11 @@ func (s *accountDataStatements) SelectAccountData(
 
 	global := map[string]json.RawMessage{}
 	rooms := map[string]map[string]json.RawMessage{}
-
+	var roomID string
+	var dataType string
+	var content []byte
+	
 	for rows.Next() {
-		var roomID string
-		var dataType string
-		var content []byte
-
 		if err = rows.Scan(&roomID, &dataType, &content); err != nil {
 			return nil, nil, err
 		}

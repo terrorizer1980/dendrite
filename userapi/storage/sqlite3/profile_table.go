@@ -126,8 +126,8 @@ func (s *profilesStatements) SelectProfilesBySearch(
 		return nil, err
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectProfilesBySearch: rows.close() failed")
+	var profile authtypes.Profile
 	for rows.Next() {
-		var profile authtypes.Profile
 		if err := rows.Scan(&profile.Localpart, &profile.DisplayName, &profile.AvatarURL); err != nil {
 			return nil, err
 		}

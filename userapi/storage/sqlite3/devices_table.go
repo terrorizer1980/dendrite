@@ -235,10 +235,10 @@ func (s *devicesStatements) SelectDevicesByLocalpart(
 		return devices, err
 	}
 
+	var dev api.Device
+	var lastseents sql.NullInt64
+	var id, displayname, ip, useragent sql.NullString
 	for rows.Next() {
-		var dev api.Device
-		var lastseents sql.NullInt64
-		var id, displayname, ip, useragent sql.NullString
 		err = rows.Scan(&id, &displayname, &lastseents, &ip, &useragent)
 		if err != nil {
 			return devices, err
@@ -279,10 +279,10 @@ func (s *devicesStatements) SelectDevicesByID(ctx context.Context, deviceIDs []s
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectDevicesByID: rows.close() failed")
 	var devices []api.Device
+	var dev api.Device
+	var localpart string
+	var displayName sql.NullString
 	for rows.Next() {
-		var dev api.Device
-		var localpart string
-		var displayName sql.NullString
 		if err := rows.Scan(&dev.ID, &localpart, &displayName); err != nil {
 			return nil, err
 		}

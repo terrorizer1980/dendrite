@@ -93,9 +93,9 @@ func (s *threepidStatements) SelectThreePIDsForLocalpart(
 	}
 
 	threepids = []authtypes.ThreePID{}
+	var threepid string
+	var medium string
 	for rows.Next() {
-		var threepid string
-		var medium string
 		if err = rows.Scan(&threepid, &medium); err != nil {
 			return
 		}
