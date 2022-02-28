@@ -103,9 +103,9 @@ func (s *queueJSONStatements) SelectQueueJSON(
 		return nil, err
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectJSON: rows.close() failed")
+	var nid int64
+	var blob []byte
 	for rows.Next() {
-		var nid int64
-		var blob []byte
 		if err = rows.Scan(&nid, &blob); err != nil {
 			return nil, err
 		}

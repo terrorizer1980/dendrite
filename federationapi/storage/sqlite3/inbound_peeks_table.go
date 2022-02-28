@@ -143,8 +143,8 @@ func (s *inboundPeeksStatements) SelectInboundPeeks(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "SelectInboundPeeks: rows.close() failed")
 
+	inboundPeek := types.InboundPeek{}
 	for rows.Next() {
-		inboundPeek := types.InboundPeek{}
 		if err = rows.Scan(
 			&inboundPeek.RoomID,
 			&inboundPeek.ServerName,

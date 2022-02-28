@@ -149,9 +149,9 @@ func (s *notaryServerKeysMetadataStatements) SelectKeys(ctx context.Context, txn
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectNotaryKeyResponsesStmt close failed")
 	var results []gomatrixserverlib.ServerKeys
+	var sk gomatrixserverlib.ServerKeys
+	var raw string
 	for rows.Next() {
-		var sk gomatrixserverlib.ServerKeys
-		var raw string
 		if err = rows.Scan(&raw); err != nil {
 			return nil, err
 		}
