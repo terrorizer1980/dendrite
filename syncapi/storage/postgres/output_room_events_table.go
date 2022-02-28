@@ -226,16 +226,15 @@ func (s *outputRoomEventsStatements) SelectStateInRange(
 
 	// RoomID => A set (map[string]bool) of state event IDs which are between the two positions
 	stateNeeded := make(map[string]map[string]bool)
-
+	var (
+		eventID         string
+		streamPos       types.StreamPosition
+		eventBytes      []byte
+		excludeFromSync bool
+		addIDs          pq.StringArray
+		delIDs          pq.StringArray
+	)
 	for rows.Next() {
-		var (
-			eventID         string
-			streamPos       types.StreamPosition
-			eventBytes      []byte
-			excludeFromSync bool
-			addIDs          pq.StringArray
-			delIDs          pq.StringArray
-		)
 		if err := rows.Scan(&eventID, &streamPos, &eventBytes, &excludeFromSync, &addIDs, &delIDs); err != nil {
 			return nil, nil, err
 		}
@@ -473,11 +472,11 @@ func (s *outputRoomEventsStatements) SelectContextBeforeEvent(
 	}
 	defer rows.Close()
 
+	var (
+		eventBytes []byte
+	)
 	for rows.Next() {
-		var (
-			eventBytes []byte
-			evt        *gomatrixserverlib.HeaderedEvent
-		)
+		var evt *gomatrixserverlib.HeaderedEvent
 		if err = rows.Scan(&eventBytes); err != nil {
 			return evts, err
 		}
@@ -505,11 +504,10 @@ func (s *outputRoomEventsStatements) SelectContextAfterEvent(
 	}
 	defer rows.Close()
 
+	var eventBytes []byte
 	for rows.Next() {
-		var (
-			eventBytes []byte
-			evt        *gomatrixserverlib.HeaderedEvent
-		)
+		var evt *gomatrixserverlib.HeaderedEvent
+
 		if err = rows.Scan(&lastID, &eventBytes); err != nil {
 			return 0, evts, err
 		}
@@ -524,16 +522,16 @@ func (s *outputRoomEventsStatements) SelectContextAfterEvent(
 
 func rowsToStreamEvents(rows *sql.Rows) ([]types.StreamEvent, error) {
 	var result []types.StreamEvent
+	var (
+		eventID         string
+		streamPos       types.StreamPosition
+		eventBytes      []byte
+		excludeFromSync bool
+		sessionID       *int64
+		txnID           *string
+		transactionID   *api.TransactionID
+	)
 	for rows.Next() {
-		var (
-			eventID         string
-			streamPos       types.StreamPosition
-			eventBytes      []byte
-			excludeFromSync bool
-			sessionID       *int64
-			txnID           *string
-			transactionID   *api.TransactionID
-		)
 		if err := rows.Scan(&eventID, &streamPos, &eventBytes, &sessionID, &excludeFromSync, &txnID); err != nil {
 			return nil, err
 		}

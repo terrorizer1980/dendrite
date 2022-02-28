@@ -137,9 +137,9 @@ func (s *currentRoomStateStatements) SelectJoinedUsers(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectJoinedUsers: rows.close() failed")
 
 	result := make(map[string][]string)
+	var roomID string
+	var userID string
 	for rows.Next() {
-		var roomID string
-		var userID string
 		if err := rows.Scan(&roomID, &userID); err != nil {
 			return nil, err
 		}
@@ -165,8 +165,8 @@ func (s *currentRoomStateStatements) SelectRoomIDsWithMembership(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectRoomIDsWithMembership: rows.close() failed")
 
 	var result []string
+	var roomID string
 	for rows.Next() {
-		var roomID string
 		if err := rows.Scan(&roomID); err != nil {
 			return nil, err
 		}
@@ -289,9 +289,9 @@ func (s *currentRoomStateStatements) SelectEventsWithEventIDs(
 
 func rowsToEvents(rows *sql.Rows) ([]*gomatrixserverlib.HeaderedEvent, error) {
 	result := []*gomatrixserverlib.HeaderedEvent{}
+	var eventID string
+	var eventBytes []byte
 	for rows.Next() {
-		var eventID string
-		var eventBytes []byte
 		if err := rows.Scan(&eventID, &eventBytes); err != nil {
 			return nil, err
 		}
