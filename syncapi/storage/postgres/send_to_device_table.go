@@ -106,9 +106,9 @@ func (s *sendToDeviceStatements) SelectSendToDeviceMessages(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "SelectSendToDeviceMessages: rows.close() failed")
 
+	var id types.StreamPosition
+	var content string
 	for rows.Next() {
-		var id types.StreamPosition
-		var userID, deviceID, content string
 		if err = rows.Scan(&id, &userID, &deviceID, &content); err != nil {
 			return
 		}

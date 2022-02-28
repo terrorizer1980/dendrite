@@ -95,9 +95,9 @@ func (s *backwardExtremitiesStatements) SelectBackwardExtremitiesForRoom(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectBackwardExtremitiesForRoom: rows.close() failed")
 
 	bwExtrems = make(map[string][]string)
+	var eID string
+	var prevEventID string
 	for rows.Next() {
-		var eID string
-		var prevEventID string
 		if err = rows.Scan(&eID, &prevEventID); err != nil {
 			return
 		}

@@ -113,9 +113,9 @@ func (r *receiptStatements) SelectRoomReceiptsAfter(ctx context.Context, roomIDs
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "SelectRoomReceiptsAfter: rows.close() failed")
 	var res []api.OutputReceiptEvent
+	var id types.StreamPosition
 	for rows.Next() {
 		r := api.OutputReceiptEvent{}
-		var id types.StreamPosition
 		err = rows.Scan(&id, &r.RoomID, &r.Type, &r.UserID, &r.EventID, &r.Timestamp)
 		if err != nil {
 			return 0, res, fmt.Errorf("unable to scan row to api.Receipts: %w", err)

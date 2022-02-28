@@ -138,9 +138,9 @@ func (s *peekStatements) SelectPeeksInRange(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "SelectPeeksInRange: rows.close() failed")
 
+	var changed bool
 	for rows.Next() {
 		peek := types.Peek{}
-		var changed bool
 		if err = rows.Scan(&peek.RoomID, &peek.Deleted, &changed); err != nil {
 			return
 		}
@@ -161,8 +161,8 @@ func (s *peekStatements) SelectPeekingDevices(
 	defer internal.CloseAndLogIfError(ctx, rows, "SelectPeekingDevices: rows.close() failed")
 
 	result := make(map[string][]types.PeekingDevice)
+	var roomID, userID, deviceID string
 	for rows.Next() {
-		var roomID, userID, deviceID string
 		if err := rows.Scan(&roomID, &userID, &deviceID); err != nil {
 			return nil, err
 		}

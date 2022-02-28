@@ -105,11 +105,10 @@ func (s *accountDataStatements) SelectAccountDataInRange(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectAccountDataInRange: rows.close() failed")
 
 	var entries int
-
+	var dataType string
+	var roomID string
+	
 	for rows.Next() {
-		var dataType string
-		var roomID string
-
 		if err = rows.Scan(&roomID, &dataType); err != nil {
 			return
 		}

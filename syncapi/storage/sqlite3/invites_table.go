@@ -141,12 +141,12 @@ func (s *inviteEventsStatements) SelectInviteEventsInRange(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectInviteEventsInRange: rows.close() failed")
 	result := map[string]*gomatrixserverlib.HeaderedEvent{}
 	retired := map[string]*gomatrixserverlib.HeaderedEvent{}
+	var (
+		roomID    string
+		eventJSON []byte
+		deleted   bool
+	)
 	for rows.Next() {
-		var (
-			roomID    string
-			eventJSON []byte
-			deleted   bool
-		)
 		if err = rows.Scan(&roomID, &eventJSON, &deleted); err != nil {
 			return nil, nil, err
 		}
