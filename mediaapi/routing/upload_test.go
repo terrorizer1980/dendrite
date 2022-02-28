@@ -2,7 +2,10 @@ package routing
 
 import (
 	"context"
+	"encoding/json"
 	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -13,6 +16,7 @@ import (
 	"github.com/matrix-org/dendrite/mediaapi/storage"
 	"github.com/matrix-org/dendrite/mediaapi/types"
 	"github.com/matrix-org/dendrite/setup/config"
+	"github.com/matrix-org/dendrite/userapi/api"
 	"github.com/matrix-org/util"
 	log "github.com/sirupsen/logrus"
 )
@@ -37,7 +41,7 @@ func Test_uploadRequest_doUpload(t *testing.T) {
 
 	maxSize := config.FileSizeBytes(8)
 	logger := log.New().WithField("mediaapi", "test")
-	testdataPath := filepath.Join(wd, "./testdata")
+	testdataPath := filepath.Join(wd, "./testdata/media")
 
 	cfg := &config.MediaAPI{
 		MaxFileSizeBytes:  &maxSize,
@@ -129,4 +133,81 @@ func Test_uploadRequest_doUpload(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestUpload(t *testing.T) {
+	active := &types.ActiveThumbnailGeneration{
+		PathToResult: map[string]*types.ThumbnailGenerationResult{},
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Errorf("failed to get current working directory: %v", err)
+	}
+
+	testdataPath := filepath.Join(wd, "./testdata/media")
+	defer os.RemoveAll(testdataPath)
+	cfg := &config.MediaAPI{
+		MaxFileSizeBytes: &config.DefaultMaxFileSizeBytes,
+		BasePath:         config.Path(testdataPath),
+		AbsBasePath:      config.Path(testdataPath),
+		ThumbnailSizes: []config.ThumbnailSize{
+			{
+				Width:        200,
+				Height:       200,
+				ResizeMethod: "crop",
+			},
+		},
+		DynamicThumbnails: true,
+		Matrix: &config.Global{
+			ServerName: "localhost",
+		},
+	}
+
+	db, err := storage.Open(&config.DatabaseOptions{
+		ConnectionString:       "file::memory:?cache=shared",
+		MaxOpenConnections:     100,
+		MaxIdleConnections:     2,
+		ConnMaxLifetimeSeconds: -1,
+	})
+	if err != nil {
+		t.Errorf("error opening mediaapi database: %v", err)
+		return
+	}
+
+	device := &api.Device{}
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		res := Upload(r, cfg, device, db, active)
+		if err = json.NewEncoder(w).Encode(res); err != nil {
+			t.Errorf("unable to encode response")
+			return
+		}
+	}
+
+	f, err := os.Open("./testdata/fail1.jpg")
+	if err != nil {
+		t.Errorf("unable to open file")
+	}
+	defer f.Close()
+
+	f2, err := os.Open("./testdata/fail2.jpg")
+	if err != nil {
+		t.Errorf("unable to open file")
+	}
+	defer f2.Close()
+
+	req := httptest.NewRequest("POST", "http://example.com/foo", f)
+	w := httptest.NewRecorder()
+
+	// upload
+	handler(w, req)
+
+	_ = w.Result()
+
+	// upload again
+	req2 := httptest.NewRequest("POST", "http://example.com/foo", f2)
+	handler(w, req2)
+
+	//resp := w.Result()
+
 }

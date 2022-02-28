@@ -21,19 +21,16 @@ import (
 	"context"
 	"image"
 	"image/draw"
-
 	// Imported for gif codec
 	_ "image/gif"
 	"image/jpeg"
-
 	// Imported for png codec
 	_ "image/png"
+	"os"
+	"time"
 
 	// Imported for webp codec
 	_ "golang.org/x/image/webp"
-
-	"os"
-	"time"
 
 	"github.com/matrix-org/dendrite/mediaapi/storage"
 	"github.com/matrix-org/dendrite/mediaapi/types"
