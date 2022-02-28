@@ -127,8 +127,8 @@ func (s *inviteStatements) UpdateInviteRetired(
 	defer internal.CloseAndLogIfError(ctx, rows, "updateInviteRetired: rows.close() failed")
 
 	var eventIDs []string
-	var inviteEventID string
 	for rows.Next() {
+		var inviteEventID string
 		if err = rows.Scan(&inviteEventID); err != nil {
 			return nil, err
 		}
@@ -152,9 +152,9 @@ func (s *inviteStatements) SelectInviteActiveForUserInRoom(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectInviteActiveForUserInRoom: rows.close() failed")
 	var result []types.EventStateKeyNID
 	var eventIDs []string
-	var inviteEventID string
-	var senderUserNID int64
 	for rows.Next() {
+		var inviteEventID string
+		var senderUserNID int64
 		if err := rows.Scan(&inviteEventID, &senderUserNID); err != nil {
 			return nil, nil, err
 		}

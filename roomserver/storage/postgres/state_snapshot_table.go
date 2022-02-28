@@ -119,9 +119,9 @@ func (s *stateSnapshotStatements) BulkSelectStateBlockNIDs(
 	defer rows.Close() // nolint: errcheck
 	results := make([]types.StateBlockNIDList, len(stateNIDs))
 	i := 0
-	var stateBlockNIDs pq.Int64Array
 	for ; rows.Next(); i++ {
 		result := &results[i]
+		var stateBlockNIDs pq.Int64Array
 		if err = rows.Scan(&result.StateSnapshotNID, &stateBlockNIDs); err != nil {
 			return nil, err
 		}

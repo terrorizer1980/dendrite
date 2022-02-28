@@ -233,8 +233,8 @@ func (s *membershipStatements) SelectMembershipsFromRoom(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectMembershipsFromRoom: rows.close() failed")
 
-	var eNID types.EventNID
 	for rows.Next() {
+		var eNID types.EventNID
 		if err = rows.Scan(&eNID); err != nil {
 			return
 		}
@@ -261,8 +261,8 @@ func (s *membershipStatements) SelectMembershipsFromRoomAndMembership(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectMembershipsFromRoomAndMembership: rows.close() failed")
 
-	var eNID types.EventNID
 	for rows.Next() {
+		var eNID types.EventNID
 		if err = rows.Scan(&eNID); err != nil {
 			return
 		}
@@ -293,8 +293,8 @@ func (s *membershipStatements) SelectRoomsWithMembership(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "SelectRoomsWithMembership: rows.close() failed")
 	var roomNIDs []types.RoomNID
-	var roomNID types.RoomNID
 	for rows.Next() {
+		var roomNID types.RoomNID
 		if err := rows.Scan(&roomNID); err != nil {
 			return nil, err
 		}
@@ -318,9 +318,9 @@ func (s *membershipStatements) SelectJoinedUsersSetForRooms(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectJoinedUsersSetForRooms: rows.close() failed")
 	result := make(map[types.EventStateKeyNID]int)
-	var userID types.EventStateKeyNID
-	var count int
 	for rows.Next() {
+		var userID types.EventStateKeyNID
+		var count int
 		if err := rows.Scan(&userID, &count); err != nil {
 			return nil, err
 		}
@@ -340,12 +340,12 @@ func (s *membershipStatements) SelectKnownUsers(
 	}
 	result := []string{}
 	defer internal.CloseAndLogIfError(ctx, rows, "SelectKnownUsers: rows.close() failed")
-	var resultUserID string
 	for rows.Next() {
-		if err := rows.Scan(&resultUserID); err != nil {
+		var userID string
+		if err := rows.Scan(&userID); err != nil {
 			return nil, err
 		}
-		result = append(result, resultUserID)
+		result = append(result, userID)
 	}
 	return result, rows.Err()
 }
