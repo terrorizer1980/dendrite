@@ -147,10 +147,10 @@ func retrieveEvents(eventRows *sql.Rows, limit int) (events []gomatrixserverlib.
 	// If txn_id changes dramatically, we've switched from collecting old events to
 	// new ones. Send back those events first.
 	lastTxnID := invalidTxnID
-	var event gomatrixserverlib.HeaderedEvent
 	var eventJSON []byte
 	var id int
 	for eventsProcessed := 0; eventRows.Next(); {
+		var event gomatrixserverlib.HeaderedEvent
 		err = eventRows.Scan(
 			&id,
 			&eventJSON,
