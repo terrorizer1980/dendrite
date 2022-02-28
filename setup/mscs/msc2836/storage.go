@@ -297,8 +297,8 @@ func (p *DB) ChildrenForParent(ctx context.Context, eventID, relType string, rec
 	}
 	defer rows.Close() // nolint: errcheck
 	var children []eventInfo
+	var evInfo eventInfo
 	for rows.Next() {
-		var evInfo eventInfo
 		if err := rows.Scan(&evInfo.EventID, &evInfo.OriginServerTS, &evInfo.RoomID); err != nil {
 			return nil, err
 		}

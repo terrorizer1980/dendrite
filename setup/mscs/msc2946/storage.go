@@ -150,9 +150,9 @@ func (d *DB) References(ctx context.Context, roomID string) ([]*gomatrixserverli
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "failed to close References")
 	refs := make([]*gomatrixserverlib.HeaderedEvent, 0)
+	var roomVer string
+	var jsonBytes []byte
 	for rows.Next() {
-		var roomVer string
-		var jsonBytes []byte
 		if err := rows.Scan(&roomVer, &jsonBytes); err != nil {
 			return nil, err
 		}

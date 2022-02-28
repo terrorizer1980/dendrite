@@ -103,8 +103,8 @@ func (s *PartitionOffsetStatements) selectPartitionOffsets(
 		return nil, err
 	}
 	defer checkNamedErr(rows.Close, &err)
+	var offset PartitionOffset
 	for rows.Next() {
-		var offset PartitionOffset
 		if err = rows.Scan(&offset.Partition, &offset.Offset); err != nil {
 			return nil, err
 		}

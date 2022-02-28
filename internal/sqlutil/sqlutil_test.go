@@ -30,9 +30,9 @@ func TestShouldReturnCorrectAmountOfResulstIfFewerVariablesThanLimit(t *testing.
 
 	ctx := context.Background()
 	var result = make([]int, 0)
+	var id int
 	err = RunLimitedVariablesQuery(ctx, q, db, iKeyIDs, limit, func(rows *sql.Rows) error {
 		for rows.Next() {
-			var id int
 			err = rows.Scan(&id)
 			assertNoError(t, err, "rows.Scan returned an error")
 			result = append(result, id)
@@ -67,9 +67,9 @@ func TestShouldReturnCorrectAmountOfResulstIfEqualVariablesAsLimit(t *testing.T)
 
 	ctx := context.Background()
 	var result = make([]int, 0)
+	var id int
 	err = RunLimitedVariablesQuery(ctx, q, db, iKeyIDs, limit, func(rows *sql.Rows) error {
 		for rows.Next() {
-			var id int
 			err = rows.Scan(&id)
 			assertNoError(t, err, "rows.Scan returned an error")
 			result = append(result, id)
@@ -108,9 +108,9 @@ func TestShouldReturnCorrectAmountOfResultsIfMoreVariablesThanLimit(t *testing.T
 
 	ctx := context.Background()
 	var result = make([]int, 0)
+	var id int
 	err = RunLimitedVariablesQuery(ctx, q, db, iKeyIDs, limit, func(rows *sql.Rows) error {
 		for rows.Next() {
-			var id int
 			err = rows.Scan(&id)
 			assertNoError(t, err, "rows.Scan returned an error")
 			result = append(result, id)
@@ -148,9 +148,9 @@ func TestShouldReturnErrorIfRowsScanReturnsError(t *testing.T) {
 
 	ctx := context.Background()
 	var result = make([]uint, 0)
+	var id uint
 	err = RunLimitedVariablesQuery(ctx, q, db, iKeyIDs, limit, func(rows *sql.Rows) error {
 		for rows.Next() {
-			var id uint
 			err = rows.Scan(&id)
 			if err != nil {
 				return err
