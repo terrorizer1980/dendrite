@@ -126,9 +126,9 @@ func (s *stateSnapshotStatements) BulkSelectStateBlockNIDs(
 	defer internal.CloseAndLogIfError(ctx, rows, "bulkSelectStateBlockNIDs: rows.close() failed")
 	results := make([]types.StateBlockNIDList, len(stateNIDs))
 	i := 0
+	var stateBlockNIDsJSON string
 	for ; rows.Next(); i++ {
 		result := &results[i]
-		var stateBlockNIDsJSON string
 		if err := rows.Scan(&result.StateSnapshotNID, &stateBlockNIDsJSON); err != nil {
 			return nil, err
 		}

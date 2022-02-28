@@ -400,15 +400,15 @@ func (s *eventStatements) BulkSelectStateAtEventAndReference(
 	defer internal.CloseAndLogIfError(ctx, rows, "bulkSelectStateAtEventAndReference: rows.close() failed")
 	results := make([]types.StateAtEventAndReference, len(eventNIDs))
 	i := 0
+	var (
+		eventTypeNID     int64
+		eventStateKeyNID int64
+		eventNID         int64
+		stateSnapshotNID int64
+		eventID          string
+		eventSHA256      []byte
+	)
 	for ; rows.Next(); i++ {
-		var (
-			eventTypeNID     int64
-			eventStateKeyNID int64
-			eventNID         int64
-			stateSnapshotNID int64
-			eventID          string
-			eventSHA256      []byte
-		)
 		if err = rows.Scan(
 			&eventTypeNID, &eventStateKeyNID, &eventNID, &stateSnapshotNID, &eventID, &eventSHA256,
 		); err != nil {
@@ -538,9 +538,9 @@ func (s *eventStatements) bulkSelectEventNID(ctx context.Context, txn *sql.Tx, e
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "bulkSelectEventNID: rows.close() failed")
 	results := make(map[string]types.EventNID, len(eventIDs))
+	var eventID string
+	var eventNID int64
 	for rows.Next() {
-		var eventID string
-		var eventNID int64
 		if err = rows.Scan(&eventID, &eventNID); err != nil {
 			return nil, err
 		}
@@ -586,9 +586,9 @@ func (s *eventStatements) SelectRoomNIDsForEventNIDs(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectRoomNIDsForEventNIDsStmt: rows.close() failed")
 	result := make(map[types.EventNID]types.RoomNID)
+	var eventNID types.EventNID
+	var roomNID types.RoomNID
 	for rows.Next() {
-		var eventNID types.EventNID
-		var roomNID types.RoomNID
 		if err = rows.Scan(&eventNID, &roomNID); err != nil {
 			return nil, err
 		}

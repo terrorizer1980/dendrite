@@ -113,8 +113,8 @@ func (s *roomAliasesStatements) SelectAliasesFromRoomID(
 
 	defer internal.CloseAndLogIfError(ctx, rows, "selectAliasesFromRoomID: rows.close() failed")
 
+	var alias string
 	for rows.Next() {
-		var alias string
 		if err = rows.Scan(&alias); err != nil {
 			return
 		}

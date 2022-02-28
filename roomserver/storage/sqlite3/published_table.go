@@ -96,8 +96,8 @@ func (s *publishedStatements) SelectAllPublishedRooms(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectAllPublishedStmt: rows.close() failed")
 
 	var roomIDs []string
+	var roomID string
 	for rows.Next() {
-		var roomID string
 		if err = rows.Scan(&roomID); err != nil {
 			return nil, err
 		}

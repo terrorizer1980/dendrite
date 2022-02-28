@@ -121,8 +121,8 @@ func (s *stateBlockStatements) BulkSelectStateBlockEntries(
 
 	results := make([][]types.EventNID, len(stateBlockNIDs))
 	i := 0
+	var stateBlockNID types.StateBlockNID
 	for ; rows.Next(); i++ {
-		var stateBlockNID types.StateBlockNID
 		var result json.RawMessage
 		if err = rows.Scan(&stateBlockNID, &result); err != nil {
 			return nil, err
