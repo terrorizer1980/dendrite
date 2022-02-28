@@ -155,8 +155,8 @@ func (s *joinedHostsStatements) SelectAllJoinedHosts(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectAllJoinedHosts: rows.close() failed")
 
 	var result []gomatrixserverlib.ServerName
+	var serverName string
 	for rows.Next() {
-		var serverName string
 		if err = rows.Scan(&serverName); err != nil {
 			return nil, err
 		}
@@ -176,8 +176,8 @@ func (s *joinedHostsStatements) SelectJoinedHostsForRooms(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectJoinedHostsForRoomsStmt: rows.close() failed")
 
 	var result []gomatrixserverlib.ServerName
+	var serverName string
 	for rows.Next() {
-		var serverName string
 		if err = rows.Scan(&serverName); err != nil {
 			return nil, err
 		}
@@ -197,8 +197,8 @@ func joinedHostsFromStmt(
 	defer internal.CloseAndLogIfError(ctx, rows, "joinedHostsFromStmt: rows.close() failed")
 
 	var result []types.JoinedHost
+	var eventID, serverName string
 	for rows.Next() {
-		var eventID, serverName string
 		if err = rows.Scan(&eventID, &serverName); err != nil {
 			return nil, err
 		}

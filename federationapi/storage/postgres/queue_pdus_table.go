@@ -169,8 +169,8 @@ func (s *queuePDUsStatements) SelectQueuePDUs(
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "queueFromStmt: rows.close() failed")
 	var result []int64
+	var nid int64
 	for rows.Next() {
-		var nid int64
 		if err = rows.Scan(&nid); err != nil {
 			return nil, err
 		}
