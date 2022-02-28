@@ -148,13 +148,13 @@ func (s *thumbnailStatements) selectThumbnails(
 	defer internal.CloseAndLogIfError(ctx, rows, "selectThumbnails: rows.close() failed")
 
 	var thumbnails []*types.ThumbnailMetadata
+	thumbnailMetadata := types.ThumbnailMetadata{
+		MediaMetadata: &types.MediaMetadata{
+			MediaID: mediaID,
+			Origin:  mediaOrigin,
+		},
+	}
 	for rows.Next() {
-		thumbnailMetadata := types.ThumbnailMetadata{
-			MediaMetadata: &types.MediaMetadata{
-				MediaID: mediaID,
-				Origin:  mediaOrigin,
-			},
-		}
 		err = rows.Scan(
 			&thumbnailMetadata.MediaMetadata.ContentType,
 			&thumbnailMetadata.MediaMetadata.FileSizeBytes,
