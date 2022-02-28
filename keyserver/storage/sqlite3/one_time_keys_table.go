@@ -113,10 +113,10 @@ func (s *oneTimeKeysStatements) SelectOneTimeKeys(ctx context.Context, userID, d
 	}
 
 	result := make(map[string]json.RawMessage)
+	var keyID string
+	var algorithm string
+	var keyJSONStr string
 	for rows.Next() {
-		var keyID string
-		var algorithm string
-		var keyJSONStr string
 		if err := rows.Scan(&keyID, &algorithm, &keyJSONStr); err != nil {
 			return nil, err
 		}
@@ -139,9 +139,9 @@ func (s *oneTimeKeysStatements) CountOneTimeKeys(ctx context.Context, userID, de
 		return nil, err
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectKeysCountStmt: rows.close() failed")
+	var algorithm string
+	var count int
 	for rows.Next() {
-		var algorithm string
-		var count int
 		if err = rows.Scan(&algorithm, &count); err != nil {
 			return nil, err
 		}
@@ -173,9 +173,9 @@ func (s *oneTimeKeysStatements) InsertOneTimeKeys(
 		return nil, err
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectKeysCountStmt: rows.close() failed")
+	var algorithm string
+	var count int
 	for rows.Next() {
-		var algorithm string
-		var count int
 		if err = rows.Scan(&algorithm, &count); err != nil {
 			return nil, err
 		}

@@ -133,9 +133,9 @@ func (s *oneTimeKeysStatements) CountOneTimeKeys(ctx context.Context, userID, de
 		return nil, err
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectKeysCountStmt: rows.close() failed")
+	var algorithm string
+	var count int
 	for rows.Next() {
-		var algorithm string
-		var count int
 		if err = rows.Scan(&algorithm, &count); err != nil {
 			return nil, err
 		}
@@ -165,9 +165,9 @@ func (s *oneTimeKeysStatements) InsertOneTimeKeys(ctx context.Context, txn *sql.
 		return nil, err
 	}
 	defer internal.CloseAndLogIfError(ctx, rows, "selectKeysCountStmt: rows.close() failed")
+	var algorithm string
+	var count int
 	for rows.Next() {
-		var algorithm string
-		var count int
 		if err = rows.Scan(&algorithm, &count); err != nil {
 			return nil, err
 		}

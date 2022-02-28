@@ -110,8 +110,8 @@ func (s *staleDeviceListsStatements) SelectUserIDsWithStaleDeviceLists(ctx conte
 
 func rowsToUserIDs(ctx context.Context, rows *sql.Rows) (result []string, err error) {
 	defer internal.CloseAndLogIfError(ctx, rows, "closing rowsToUserIDs failed")
+	var userID string
 	for rows.Next() {
-		var userID string
 		if err := rows.Scan(&userID); err != nil {
 			return nil, err
 		}

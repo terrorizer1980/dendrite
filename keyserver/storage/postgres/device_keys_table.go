@@ -204,15 +204,15 @@ func (s *deviceKeysStatements) SelectBatchDeviceKeys(ctx context.Context, userID
 		deviceIDMap[d] = true
 	}
 	var result []api.DeviceMessage
+	var keyJSON string
+	var streamID int
+	var displayName sql.NullString
 	for rows.Next() {
 		dk := api.DeviceMessage{
 			Type:       api.TypeDeviceKeyUpdate,
 			DeviceKeys: &api.DeviceKeys{},
 		}
 		dk.UserID = userID
-		var keyJSON string
-		var streamID int
-		var displayName sql.NullString
 		if err := rows.Scan(&dk.DeviceID, &keyJSON, &streamID, &displayName); err != nil {
 			return nil, err
 		}
