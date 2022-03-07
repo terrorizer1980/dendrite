@@ -77,6 +77,8 @@ type RemoveRoomAliasRequest struct {
 	UserID string `json:"user_id"`
 	// The room alias to remove
 	Alias string `json:"alias"`
+	// Purge all room aliases, e.g. when upgrading a room
+	Purge bool `json:"purge"`
 }
 
 // RemoveRoomAliasResponse is a response to RemoveRoomAlias
@@ -102,4 +104,3 @@ func (a AliasEvent) Valid() bool {
 	}
 	return a.Alias == "" || validateAliasRegex.MatchString(a.Alias)
 }
-

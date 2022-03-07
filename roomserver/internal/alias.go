@@ -201,6 +201,26 @@ func (r *RoomserverInternalAPI) RemoveRoomAlias(
 				return err
 			}
 
+			altAliases := gjson.GetBytes(res, "alt_aliases").Array()
+			newAliases := []string{}
+			for _, alias := range altAliases {
+				if alias.Str != request.Alias {
+					newAliases = append(newAliases, alias.Str)
+				}
+			}
+
+			res, err = sjson.SetBytes(res, "alt_aliases", newAliases)
+			if err != nil {
+				return err
+			}
+
+			// purge all aliases, e.g. when upgrading a room
+			if request.Purge {
+				res, err = sjson.DeleteBytes(res, "alt_aliases")
+				if err != nil {
+					return err
+				}
+			}
 			sender := request.UserID
 			if request.UserID != ev.Sender() {
 				sender = ev.Sender()
@@ -240,6 +260,22 @@ func (r *RoomserverInternalAPI) RemoveRoomAlias(
 		}
 	}
 
+	// purge all aliases, e.g. when upgrading a room
+	if request.Purge {
+		roomID, err := r.DB.GetRoomIDForAlias(ctx, request.Alias)
+		if err != nil {
+			return err
+		}
+		aliases, err := r.DB.GetAliasesForRoomID(ctx, roomID)
+		if err != nil {
+			return err
+		}
+		for _, alias := range aliases {
+			if err := r.DB.RemoveRoomAlias(ctx, alias); err != nil {
+				return err
+			}
+		}
+	}
 	// Remove the alias from the database
 	if err := r.DB.RemoveRoomAlias(ctx, request.Alias); err != nil {
 		return err
