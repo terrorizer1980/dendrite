@@ -64,7 +64,7 @@ func UpgradeRoom(
 	if _, err := upgradeReq.NewVersion.EventFormat(); err != nil {
 		return util.JSONResponse{
 			Code: http.StatusBadRequest,
-			JSON: jsonerror.UnsupportedRoomVersion(fmt.Sprintf("Unsupported room version: %w", err.Error())),
+			JSON: jsonerror.UnsupportedRoomVersion(fmt.Sprintf("Unsupported room version: %s", err.Error())),
 		}
 	}
 	ctx := req.Context()
