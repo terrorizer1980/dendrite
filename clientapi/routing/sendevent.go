@@ -26,6 +26,7 @@ import (
 	"github.com/matrix-org/util"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
+	"github.com/tidwall/gjson"
 
 	"github.com/matrix-org/dendrite/clientapi/httputil"
 	"github.com/matrix-org/dendrite/clientapi/jsonerror"
@@ -152,6 +153,17 @@ func SendEvent(
 			return util.JSONResponse{
 				Code: http.StatusBadRequest,
 				JSON: jsonerror.BadAlias("No matching alias found."),
+			}
+		}
+	}
+
+	// check that the m.room.tombstone event doesn't point to the same room
+	if eventType == "m.room.tombstone" && (stateKey == nil || *stateKey == "") {
+		res := gjson.GetBytes(e.Content(), "replacement_room")
+		if res.Str == roomID {
+			return util.JSONResponse{
+				Code: http.StatusBadRequest,
+				JSON: jsonerror.InvalidArgumentValue("Cannot send tombstone event that points to the same room"),
 			}
 		}
 	}

@@ -379,6 +379,14 @@ func Setup(
 		}),
 	).Methods(http.MethodPut, http.MethodOptions)
 
+	v3mux.Handle("/rooms/{roomID}/upgrade", httputil.MakeAuthAPI("room_upgrade", userAPI, func(req *http.Request, device *userapi.Device) util.JSONResponse {
+		vars, err := httputil.URLDecodeMapValues(mux.Vars(req))
+		if err != nil {
+			return util.ErrorResponse(err)
+		}
+		return UpgradeRoom(req, device, rsAPI, asAPI, cfg, accountDB, vars["roomID"])
+	})).Methods(http.MethodPost, http.MethodOptions)
+
 	v3mux.Handle("/register", httputil.MakeExternalAPI("register", func(req *http.Request) util.JSONResponse {
 		if r := rateLimits.Limit(req); r != nil {
 			return *r

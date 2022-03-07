@@ -39,6 +39,7 @@ import (
 
 // https://matrix.org/docs/spec/client_server/r0.2.0.html#post-matrix-client-r0-createroom
 type createRoomRequest struct {
+	RoomID                    string                        `json:"room_id"`
 	Invite                    []string                      `json:"invite"`
 	Name                      string                        `json:"name"`
 	Visibility                string                        `json:"visibility"`
@@ -156,6 +157,7 @@ func CreateRoom(
 			JSON: jsonerror.InvalidArgumentValue(err.Error()),
 		}
 	}
+	r.RoomID = fmt.Sprintf("!%s:%s", util.RandomString(16), cfg.Matrix.ServerName)
 	return createRoom(req.Context(), r, device, cfg, accountDB, rsAPI, asAPI, evTime)
 }
 
@@ -172,7 +174,9 @@ func createRoom(
 	// TODO (#267): Check room ID doesn't clash with an existing one, and we
 	//              probably shouldn't be using pseudo-random strings, maybe GUIDs?
 	roomID := fmt.Sprintf("!%s:%s", util.RandomString(16), cfg.Matrix.ServerName)
-
+	if r.RoomID != "" {
+		roomID = r.RoomID
+	}
 	logger := util.GetLogger(ctx)
 	userID := device.UserID
 
